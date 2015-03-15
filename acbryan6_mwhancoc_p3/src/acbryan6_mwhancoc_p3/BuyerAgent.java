@@ -9,5 +9,10 @@ public class BuyerAgent extends Agent{
 		 System.out.println("Hello! Buyer-agent " + getAID().getName() + " is ready.");
 	 }
 
+	// Put agent clean-up operations here
+	protected void takeDown() {
+		 // Printout a dismissal message
+		 System.out.println("Buyer-agent " + getAID().getName() + " terminating.");
+	}
 
 }
