@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 public class SellerAgent extends Agent{
 	
@@ -39,10 +40,14 @@ public class SellerAgent extends Agent{
 	*/
 	private class OfferRequestsServer extends CyclicBehaviour {
 	 public void action() {
-		 ACLMessage msg = myAgent.receive();
+		 
+		 // look for CFP messages
+		 MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+		 
+		 ACLMessage msg = myAgent.receive(mt);
 		 if (msg != null) {
 			 // Message received. Process it
-			 int itemID = Integer.parseInt(msg.getContent());
+			 String itemID = msg.getContent();
 			 ACLMessage reply = msg.createReply();
 			 Integer price = (Integer) catalogue.get(itemID);
 			 if (price != null) {
