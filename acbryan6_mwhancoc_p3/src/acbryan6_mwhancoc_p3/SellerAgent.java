@@ -57,6 +57,9 @@ public class SellerAgent extends Agent{
 			 }
 			 myAgent.send(reply);
 		 }
+		 else{
+			 block();
+		 }
 	 	}
 	} // End of inner class OfferRequestsServer
 
