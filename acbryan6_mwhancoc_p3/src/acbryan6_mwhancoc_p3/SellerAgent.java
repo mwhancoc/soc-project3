@@ -4,19 +4,37 @@ import java.util.Hashtable;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
 public class SellerAgent extends Agent{
 	
-	private Hashtable catalogue;
+	private Hashtable<Integer, Float> catalogue;
 	
 	protected void setup() {
 		
+		 // Register the seller agent service in the yellow pages
+		 DFAgentDescription dfd = new DFAgentDescription();
+		 dfd.setName(getAID());
+		 ServiceDescription sd = new ServiceDescription();
+		 sd.setType("seller");
+		 sd.setName("seller-agent");
+		 dfd.addServices(sd);
+		 try {
+			 DFService.register(this, dfd);
+		 }
+		 catch (FIPAException fe) {
+			 fe.printStackTrace();
+		 }
+		
 		// Create the catalogue, hard code two items, just to test ACLMessages
-		 catalogue = new Hashtable();
-		 catalogue.put(1, 1.99);
-		 catalogue.put(2,  2.99);
+		 catalogue = new Hashtable<Integer, Float>();		 
+		 catalogue.put(1, (float) 1.99);
+		 catalogue.put(2,  (float) 2.99);
 		
 		 addBehaviour(new OfferRequestsServer());
 		 
@@ -26,6 +44,14 @@ public class SellerAgent extends Agent{
 	
 	 // Put agent clean-up operations here
 	 protected void takeDown() {
+		 // Deregister from the yellow pages
+		 try {
+			 DFService.deregister(this);
+		 }
+		 catch (FIPAException fe) {
+			 fe.printStackTrace();
+		 }
+
 		 // Printout a dismissal message
 		 System.out.println("Seller-agent " + getAID().getName() + " terminating.");
 	 }
@@ -49,7 +75,7 @@ public class SellerAgent extends Agent{
 			 // Message received. Process it
 			 String itemID = msg.getContent();
 			 ACLMessage reply = msg.createReply();
-			 Integer price = (Integer) catalogue.get(itemID);
+			 Float price = (Float) catalogue.get(itemID);
 			 if (price != null) {
 				 // The requested book is available for sale. Reply with the price
 				 reply.setPerformative(ACLMessage.PROPOSE);
