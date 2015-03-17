@@ -76,6 +76,11 @@ public class SellerAgent extends Agent{
 			 String itemID = msg.getContent();
 			 ACLMessage reply = msg.createReply();
 			 Float price = (Float) catalogue.get(itemID);
+			 
+			 /**
+			  * Jade reason whether to propose a quote or reject the buyer
+			  */
+			 
 			 if (price != null) {
 				 // The requested book is available for sale. Reply with the price
 				 reply.setPerformative(ACLMessage.PROPOSE);
