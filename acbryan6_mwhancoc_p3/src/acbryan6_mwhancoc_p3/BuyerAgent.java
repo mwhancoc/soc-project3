@@ -13,6 +13,7 @@ import jade.lang.acl.MessageTemplate;
 
 public class BuyerAgent extends Agent{
 	
+
 	protected void setup() {
 		 // Register the buyer agent service in the yellow pages
 		 DFAgentDescription dfd = new DFAgentDescription();
@@ -28,6 +29,9 @@ public class BuyerAgent extends Agent{
 			 fe.printStackTrace();
 		 }
 		 
+		 
+		
+		 
 		 addBehaviour(new TickerBehaviour(this, 60000) {
 			 protected void onTick() {
 				 myAgent.addBehaviour(new RequestPerformer());
@@ -40,6 +44,7 @@ public class BuyerAgent extends Agent{
 		 System.out.println("Hello! Buyer-agent " + getAID().getName() + " is ready.");
 	 }
 
+	
 	// Put agent clean-up operations here
 	protected void takeDown() {
 		 // Deregister from the yellow pages
@@ -71,6 +76,32 @@ public class BuyerAgent extends Agent{
 			 case 0:
 				 // Send the cfp to all sellers
 				 ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
+				// look up the seller agent
+				 DFAgentDescription template = new DFAgentDescription();
+
+				 ServiceDescription sd2 = new ServiceDescription();
+
+				 sd2.setType("seller");
+
+				 template.addServices(sd2);
+				 
+				 AID sellerAgent = null;
+
+				 try {
+
+				     DFAgentDescription[] result = DFService.search(myAgent, template);
+
+				     sellerAgent= result[0].getName();
+
+				 }
+
+				 catch (FIPAException fe) {
+
+				 fe.printStackTrace();
+				 }
+				
+				 cfp.addReceiver(sellerAgent);
+				 
 				 /**
 				  * code to look up a seller in the yellow pages
 				  */
@@ -96,6 +127,7 @@ public class BuyerAgent extends Agent{
 						 // This is an offer
 						 int price = Integer.parseInt(reply.getContent());
 						 
+						 System.out.println("recieve message from seller with price: " + price);
 						 /**
 						  * Reason with Jess whether to accept quote or reject qoute
 						  * 
