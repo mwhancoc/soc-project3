@@ -71,6 +71,9 @@ public class BuyerAgent extends Agent{
 		 private MessageTemplate mt; // The template to receive replies
 		 private int step = 0;
 		 
+		 private String itemID;
+		 private Float price;
+		 
 		 public void action() {
 			 switch (step) {
 			 case 0:
@@ -125,7 +128,9 @@ public class BuyerAgent extends Agent{
 					 // Reply received
 					 if (reply.getPerformative() == ACLMessage.PROPOSE) {
 						 // This is an offer
-						 double price = Float.parseFloat(reply.getContent());
+						 String[] content = reply.getContent().split(",");
+						 itemID = content[0];
+						 price = Float.parseFloat(content[1]);
 						 
 						 System.out.println("recieve message from seller with price: " + price);
 						 seller = reply.getSender();
@@ -169,7 +174,7 @@ public class BuyerAgent extends Agent{
 				 // Send the purchase order to the seller that provided the best offer
 				 ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
 				 order.addReceiver(seller);
-				 order.setContent("1");
+				 order.setContent(itemID + "," + price);
 				 order.setConversationId("purchase-item");
 				 order.setReplyWith("order" + System.currentTimeMillis());
 				 myAgent.send(order);

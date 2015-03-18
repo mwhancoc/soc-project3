@@ -84,7 +84,7 @@ public class SellerAgent extends Agent{
 			 if (price != null) {
 				 // The requested book is available for sale. Reply with the price
 				 reply.setPerformative(ACLMessage.PROPOSE);
-				 reply.setContent(String.valueOf(price.floatValue()));
+				 reply.setContent(itemID + "," + String.valueOf(price.floatValue()));
 				 System.out.println("recieved cfp, found price: " + price + " of item: " + itemID + " proposal");
 			 }
 			 else {
