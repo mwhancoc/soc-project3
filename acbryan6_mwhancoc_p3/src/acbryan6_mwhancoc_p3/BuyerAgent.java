@@ -65,7 +65,7 @@ public class BuyerAgent extends Agent{
 	 agents the target book.
 	*/
 	private class RequestPerformer extends Behaviour {
-		 private AID bestSeller; // The agent who provides the best offer
+		 private AID seller; // The agent who provides the best offer
 		 private int bestPrice; // The best offered price
 		 private int repliesCnt = 0; // The counter of replies from seller agents
 		 private MessageTemplate mt; // The template to receive replies
@@ -125,9 +125,17 @@ public class BuyerAgent extends Agent{
 					 // Reply received
 					 if (reply.getPerformative() == ACLMessage.PROPOSE) {
 						 // This is an offer
-						 int price = Integer.parseInt(reply.getContent());
+						 double price = Float.parseFloat(reply.getContent());
 						 
 						 System.out.println("recieve message from seller with price: " + price);
+						 seller = reply.getSender();
+						 if(price > 1.50){
+							 step = 2;
+						 }else
+						 {
+							 step = 3; 
+						 }
+						 
 						 /**
 						  * Reason with Jess whether to accept quote or reject qoute
 						  * 
@@ -160,15 +168,17 @@ public class BuyerAgent extends Agent{
 			 case 2:
 				 // Send the purchase order to the seller that provided the best offer
 				 ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-				 order.addReceiver(bestSeller);
+				 order.addReceiver(seller);
 				 order.setContent("1");
 				 order.setConversationId("purchase-item");
 				 order.setReplyWith("order" + System.currentTimeMillis());
 				 myAgent.send(order);
+				 
+				 System.out.println("accepted proposal from seller");
 				 // Prepare the template to get the purchase order reply
-				 mt = MessageTemplate.and(MessageTemplate.MatchConversationId("purchase-item"),
-						 MessageTemplate.MatchInReplyTo(order.getReplyWith()));
-				 step = 3;
+				 //mt = MessageTemplate.and(MessageTemplate.MatchConversationId("purchase-item"),
+				//		 MessageTemplate.MatchInReplyTo(order.getReplyWith()));
+				 step = 4;
 				 break;
 			 case 3:
 				 
@@ -195,7 +205,7 @@ public class BuyerAgent extends Agent{
 		 	}
 		 
 		 	public boolean done() {
-		 		return ((step == 2 && bestSeller == null) || step == 4);
+		 		return ((step == 2 && seller == null) || step == 4);
 		 	}
 	} // End of inner class RequestPerformer
 }
