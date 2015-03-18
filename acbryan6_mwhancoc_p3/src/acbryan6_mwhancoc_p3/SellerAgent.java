@@ -69,13 +69,13 @@ public class SellerAgent extends Agent{
 		 
 		 // look for CFP messages
 		 MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
-		 
+	
 		 ACLMessage msg = myAgent.receive(mt);
 		 if (msg != null) {
 			 // Message received. Process it
 			 String itemID = msg.getContent();
 			 ACLMessage reply = msg.createReply();
-			 Float price = (Float) catalogue.get(itemID);
+			 Float price = (Float) catalogue.get(Integer.parseInt(itemID));
 			 
 			 /**
 			  * Jade reason whether to propose a quote or reject the buyer
@@ -85,11 +85,14 @@ public class SellerAgent extends Agent{
 				 // The requested book is available for sale. Reply with the price
 				 reply.setPerformative(ACLMessage.PROPOSE);
 				 reply.setContent(String.valueOf(price.intValue()));
+				 System.out.println("recieved cfp, found price: " + price + " of item: " + itemID + " proposal");
 			 }
 			 else {
 				 // The requested book is NOT available for sale.
 				 reply.setPerformative(ACLMessage.REFUSE);
 				 reply.setContent("not-available");
+				 System.out.println("Refuse CFP!!!");
+				 System.out.println("Item: " + itemID + " not found in catalogue");
 			 }
 			 myAgent.send(reply);
 		 }
