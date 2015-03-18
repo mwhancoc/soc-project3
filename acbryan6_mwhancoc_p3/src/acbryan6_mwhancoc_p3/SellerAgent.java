@@ -34,7 +34,7 @@ public class SellerAgent extends Agent{
 		// Create the catalogue, hard code two items, just to test ACLMessages
 		 catalogue = new Hashtable<Integer, Float>();		 
 		 catalogue.put(1, (float) 1.99);
-		 catalogue.put(2,  (float) 2.99);
+		 catalogue.put(2,  (float) 1.49);
 		
 		 addBehaviour(new OfferRequestsServer());
 		 

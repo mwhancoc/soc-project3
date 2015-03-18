@@ -32,13 +32,13 @@ public class BuyerAgent extends Agent{
 		 
 		
 		 
-		 addBehaviour(new TickerBehaviour(this, 60000) {
-			 protected void onTick() {
-				 myAgent.addBehaviour(new RequestPerformer());
-			 	}
-			 } );
+		 //addBehaviour(new TickerBehaviour(this, 60000) {
+		//	 protected void onTick() {
+		//		 myAgent.addBehaviour(new RequestPerformer());
+		//	 	}
+		//	 } );
 
-		 
+		 addBehaviour(new RequestPerformer());
 		 
 		// Printout a welcome message
 		 System.out.println("Hello! Buyer-agent " + getAID().getName() + " is ready.");
@@ -112,7 +112,7 @@ public class BuyerAgent extends Agent{
 				 //for (int i = 0; i < sellerAgents.length; ++i) {
 					// cfp.addReceiver(sellerAgents[i]);
 				 //}
-				 cfp.setContent("1");
+				 cfp.setContent("2");
 				 cfp.setConversationId("purchase-item");
 				 cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
 				 myAgent.send(cfp);
@@ -154,6 +154,10 @@ public class BuyerAgent extends Agent{
 						//	 bestSeller = reply.getSender();
 						 //}
 					 }
+					 else if(reply.getPerformative() == ACLMessage.REFUSE) {
+						 System.out.println("Seller rejected buyer's request");
+						 step = 4;
+					 }
 					 
 					 /**
 					  * check if the ACLMessage is a rejection from the seller
@@ -172,12 +176,12 @@ public class BuyerAgent extends Agent{
 				 break;
 			 case 2:
 				 // Send the purchase order to the seller that provided the best offer
-				 ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-				 order.addReceiver(seller);
-				 order.setContent(itemID + "," + price);
-				 order.setConversationId("purchase-item");
-				 order.setReplyWith("order" + System.currentTimeMillis());
-				 myAgent.send(order);
+				 ACLMessage acceptProposal = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+				 acceptProposal.addReceiver(seller);
+				 acceptProposal.setContent(itemID + "," + price);
+				 acceptProposal.setConversationId("purchase-item");
+				 acceptProposal.setReplyWith("order" + System.currentTimeMillis());
+				 myAgent.send(acceptProposal);
 				 
 				 System.out.println("accepted proposal from seller");
 				 // Prepare the template to get the purchase order reply
@@ -190,6 +194,15 @@ public class BuyerAgent extends Agent{
 				 /**
 				  * block to send a Reject_Proposal message
 				  */
+				 // Send the purchase order to the seller that provided the best offer
+				 ACLMessage rejectProposal = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+				 rejectProposal.addReceiver(seller);
+				 rejectProposal.setContent(itemID + "," + price);
+				 rejectProposal.setConversationId("purchase-item");
+				 rejectProposal.setReplyWith("order" + System.currentTimeMillis());
+				 myAgent.send(rejectProposal);
+				 
+				 System.out.println("rejected proposal from seller");
 				 // Receive the purchase order reply
 				 //reply = myAgent.receive(mt);
 				 //if (reply != null) {
@@ -205,6 +218,7 @@ public class BuyerAgent extends Agent{
 				// else {
 				//	 block();
 				// }
+				 step = 4;
 				 break;
 			 }
 		 	}
