@@ -139,7 +139,7 @@ public class BuyerAgent extends Agent{
 	            jess.Jesp j = new Jesp(fr, jess);
 		    	
 	            // Then I add the send function
-	            jess.addUserfunction(new JessSend(myAgent, this));
+	            //jess.addUserfunction(new JessSend(myAgent, this));
 
 	            // parse and execute one construct, without printing a prompt
 	            j.parse(false);
@@ -151,6 +151,10 @@ public class BuyerAgent extends Agent{
 		 }
 		 
 		 public void action() {
+			 
+			   // Then I add the send function
+	            jess.addUserfunction(new JessSend(myAgent, this));
+	            
 			 switch (step) {
 			 case 0:
 				 // Send the cfp to all sellers
@@ -337,13 +341,15 @@ public class BuyerAgent extends Agent{
 
 		       		        
 		        msg.addReceiver(new AID(vv.get(1).stringValue(context)));
+		        //msg.addReceiver(seller);
 		        msg.setSender(new AID(vv.get(2).stringValue(context)));
 		        msg.setContent(vv.get(3).stringValue(context));
 		        msg.setConversationId(vv.get(4).stringValue(context));
 		        msg.setReplyWith("msg" + System.currentTimeMillis());
 		        //msg.addReplyTo(myAgent.getAID());
-		    
-		        System.out.println("JessFact2ACL: " + msg.toString());
+		        
+		
+		        //System.out.println("JessFact2ACL: " + msg.toString());
 		        return msg;
 		    }
 
@@ -369,7 +375,7 @@ public class BuyerAgent extends Agent{
 		            //putAIDInCache(msg.getSender());
 		        //}
 		            fact = fact + ") (sender " + myAgent.getAID().getName();
-		            fact = fact + ") (content 1:1.99) (conversationID purchase-item";
+		            fact = fact + ") (content 2) (conversationID purchase-item";
 	
 
 		        //if (!isEmpty(msg.getReplyWith())) {
@@ -415,12 +421,17 @@ public class BuyerAgent extends Agent{
 		            //////////////////////////////////
 		            // Case where JESS calls (send (assert (ACLMessage ...)))
 		            else if (vv.get(1).type() == RU.FUNCALL) {
-		            	System.out.println("this is a send FUNCALL");
+		            	System.out.println("this is send RU.FUNCALL");
 		                Funcall fc = vv.get(1).funcallValue(context);
 		                vv = fc.get(1).factValue(context);
 		            }
 
 		            ACLMessage msg = rpb.JessFact2ACL(context, vv);
+		        
+		            System.out.println("in send func/Java that Jess calls" + " " + msg.toString());
+		            
+		            msg.setSender(my_agent.getAID());
+		           
 		            my_agent.send(msg);
 
 		            return Funcall.TRUE;
