@@ -271,8 +271,9 @@ public class BuyerAgent extends Agent{
 				 acceptProposal.setContent(itemID + "," + price);
 				 acceptProposal.setConversationId("purchase-item");
 				 acceptProposal.setReplyWith("order" + System.currentTimeMillis());
-				 myAgent.send(acceptProposal);
-				 
+				 //myAgent.send(acceptProposal);
+				 makeassert(ACL2JessString(acceptProposal));
+
 				 System.out.println("accepted proposal from seller");
 				 // Prepare the template to get the purchase order reply
 				 //mt = MessageTemplate.and(MessageTemplate.MatchConversationId("purchase-item"),
@@ -290,7 +291,8 @@ public class BuyerAgent extends Agent{
 				 rejectProposal.setContent(itemID + "," + price);
 				 rejectProposal.setConversationId("purchase-item");
 				 rejectProposal.setReplyWith("order" + System.currentTimeMillis());
-				 myAgent.send(rejectProposal);
+				 //myAgent.send(rejectProposal);
+				 makeassert(ACL2JessString(rejectProposal));
 				 
 				 System.out.println("rejected proposal from seller");
 				 // Receive the purchase order reply
