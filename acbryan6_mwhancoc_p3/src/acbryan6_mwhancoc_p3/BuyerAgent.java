@@ -203,7 +203,7 @@ public class BuyerAgent extends Agent{
 				 try{
 					 jess.run();
 				 }catch(JessException re) {
-			            re.printStackTrace(System.err);
+			          re.printStackTrace(System.err);
 			     }
 				 
 				 // Prepare the template to get proposals
@@ -320,6 +320,11 @@ public class BuyerAgent extends Agent{
 		        } catch (Exception re) {
 		            re.printStackTrace(System.err);
 		        }
+		        
+		        // if blocked, wake up!
+		        //if(!isRunnable()) restart();
+		        // message asserted
+		        //return true;
 		    }
 		 
 		 	public AID getSellerAID()
@@ -345,7 +350,8 @@ public class BuyerAgent extends Agent{
 		        msg.setSender(new AID(vv.get(2).stringValue(context)));
 		        msg.setContent(vv.get(3).stringValue(context));
 		        msg.setConversationId(vv.get(4).stringValue(context));
-		        msg.setReplyWith("msg" + System.currentTimeMillis());
+		        //msg.setReplyWith("msg" + System.currentTimeMillis());
+		        msg.setReplyWith(vv.get(5).stringValue(context));
 		        //msg.addReplyTo(myAgent.getAID());
 		        
 		
